@@ -11,7 +11,18 @@ class MyApp extends StatelessWidget {
           title: Text('Welcome to Flutter')
         ),
         body: Center(
-          child: Text('Hello World'),
+          child: Text(
+            'Hello World,this is a test flutter demo and welcome to here.',
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 25.0,
+              color: Color.fromARGB(255, 24, 144, 255),
+              decoration: TextDecoration.underline,
+              decorationStyle: TextDecorationStyle.dashed,
+            ),
+          ),
         ),
       ),
     );

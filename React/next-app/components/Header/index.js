@@ -5,7 +5,7 @@ import css from './index.less'
 export default () => (
   <div className={css.header}>
     <Row type="flex" justify="center">
-      <Col xs={24} sm={24} md={10} lg={10} xl={10}>
+      <Col xs={24} sm={24} md={10} lg={15} xl={12}>
         <span className={css.logo}>米兰哥</span>
         <span className={css.slogan}>个人Blog</span>
       </Col>

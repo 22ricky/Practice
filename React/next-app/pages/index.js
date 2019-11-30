@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { Row, Col, List, Icon } from 'antd'
 import Head from 'next/head'
 import Header from '../components/Header'
+import Author from '../components/Author'
+import Advertise from '../components/Advertise'
+import Footer from '../components/Footer'
 import css from './index.less'
 
 
@@ -23,24 +26,27 @@ function Home() {
       <Row type="flex" justify="center" className={css.main}>
         <Col xs={24} sm={24} md={16} lg={18} xl={14} className={css.left}>
           <List
-            header={<div>最新新闻</div>}
+            header={<div>最新赛程</div>}
             itemLayout="vertical"
             dataSource={list}
             renderItem={item => (
               <List.Item>
                 <div className={css['list-title']}>{item.title}</div>
                 <div className={css['list-icon']}>
-                  <span><Icon type="canlendar" /> 2019.11.28</span>
+                  <span><Icon type="calendar" /> 2019.11.28</span>
+                  <span><Icon type="folder" /> 欧冠</span>
                   <span><Icon type="fire" /> 1000人</span>
                 </div>
                 <div className={css['list-context']}>{item.context}</div>
               </List.Item>
             )} />
         </Col>
-        <Col xs={0} sm={0} md={7} lg={5} xl={4} className={css.right}>
-          右
+        <Col xs={0} sm={0} md={7} lg={5} xl={4}>
+          <Author />
+          <Advertise />
         </Col>
       </Row>
+      <Footer />
     </>
   )
 }

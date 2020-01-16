@@ -99,6 +99,33 @@ module.exports = () => {
         })
       })
 
+      options.defaultLoaders.css = cssLoaderConfig(config, {
+        extensions: ['css'],
+        cssModules,
+        cssLoaderOptions,
+        postcssLoaderOptions,
+        dev,
+        isServer
+      })
+
+      config.module.rules.push({
+        test: /\.css$/,
+        exclude: path.resolve(__dirname, 'node_modules'),
+        use: options.defaultLoaders.css
+      })
+
+      config.module.rules.push({
+        test: /\.css$/,
+        include: path.resolve(__dirname, 'node_modules'),
+        use: cssLoaderConfig(config, {
+          extensions: ['css'],
+          cssModules: false,
+          cssLoaderOptions: {},
+          dev,
+          isServer
+        })
+      })
+
       if (typeof nextConfig.webpack === 'function') {
         return nextConfig.webpack(config, options)
       }

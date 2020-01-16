@@ -1,21 +1,39 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import marked from 'marked'
+import hljs from 'highlight.js'
 import { Row, Col, List, Icon, Breadcrumb } from 'antd'
 import Head from 'next/head'
 import Link from 'next/link'
+import api from '../config/api'
 import Header from '../components/Header'
 import Author from '../components/Author'
 import Advertise from '../components/Advertise'
 import Footer from '../components/Footer'
+import 'highlight.js/styles/monokai-sublime.css'
 import css from './index.less'
 
 
-function ListPage() {
-  const [list, setList] = useState([
-    {title:'远征红黑军 | 桑巴元素点缀，闪耀红黑军团',context:'上期我们为您回顾了AC米兰队史上的阿根廷球员，本期我们将目光转移至阿根廷在南美赛场的最大强敌巴西。巴西是夺得世界杯冠军最多的国家，同时也是唯一一支参加了每一届世界杯的国家。提起巴西，人们就会想到足球。巴西也长期以来都是对外出产足球运动员最多的国家，而在红黑军团的历史中巴西也是最值得浓墨重彩介绍的国家。巴西是AC米兰历史上外援人数最多的国家，从古至今一直有着源源不断的巴西球星穿上红黑战袍，为俱乐部的辉煌历史贡献着自己的力量。早在上世纪30年代，AC米兰阵中便出现了巴西球员的身影。1935年，红黑军团便引进了2名巴西球员，分别是前锋阿尔诺尼和中场加巴尔多。两人都在球队共同效力了3个赛季。1938年两人离队后AC米兰出现了长达20年的巴西球员空缺时期。1958年，巴西第一次夺得世界杯冠军，球王贝利横空出世。而在1958世界杯的冠军成员里，阿尔塔菲尼是贝利之后第二年轻的队员。1958世界杯后AC米兰从帕尔梅拉斯引进了阿尔塔菲尼，这位传奇射手在红黑军团效力了7年。其中最为令人难忘的毫无疑问是1962-63赛季欧冠决赛，在温布利球场对阵本菲卡，阿尔塔菲尼梅开二度，帮助球队史上首次在欧陆封王，他本人更以14球的惊人成绩成为了当届杯赛的最佳射手。14球的欧冠单赛季进球纪录也直到近年来才被C罗打破。阿尔塔菲尼随红黑军团获得了1次欧冠冠军和2次意甲冠军。'},
-    {title:'AC米兰将与巴塞罗那共同举办国际巡回赛以庆祝120周年诞辰',context:'AC米兰足球俱乐部和巴塞罗那足球俱乐部共同宣布，为共同庆祝俱乐部成立120周年，这两支闻名于世的伟大足球俱乐部将举办一场国际巡回赛。这次巡回赛也将成为两队重温过往成就，携手共建光辉未来的良机。这项伟大活动将于当地时间2019年11月29日上午11时在巴塞罗那足球俱乐部主场——诺坎普球场正式拉开帷幕。包括德梅特里奥·阿尔贝蒂尼在内的两家俱乐部代表及传奇球星将共同出席此次活动。这项活动名为“传奇风采”，启动仪式将于2019年11月29日开始至2020年12月16日结束，旨在庆祝AC米兰与巴塞罗那这两支俱乐部的120周年诞辰。这两家俱乐部都成立于1899年，凭借各自在国内外赛场上的成功跻身世界足球之巅。两家俱乐部不仅拥有同样辉煌的历史与成就，在球场内外的独特风格也不谋而合。这两家俱乐部在球场上所呈现出的足球美学以及各自的独特理念被认为是其最为独树一帜的特点，而这一特点也融入到了各自球队的DNA当中。华丽、优雅、赏心悦目存在于球场内外，改变了世人对于足球比赛的常规看法。AC米兰和巴塞罗那这两家俱乐部在全世界范围内都有着极强的吸引力。俱乐部在球员们和形象大使的的支持下，在全球范围内推广自己的品牌。120周年纪念日将让球迷们有机会感受这两家俱乐部的光辉历史以及价值，这两支俱乐部首次巡回赛也将让球迷们有机会在全球各地见证这两家俱乐部传奇球星的比赛。这不仅是对历史的一次庆祝，同时也是两家俱乐部展望未来的一次旅程。'},
-    {title:'AC米兰足球俱乐部成立120周年庆典正式启动',context:'2019年11月9日，意大利米兰——“我们将成为一支魔鬼之师。红黑是我们的颜色，红色是火焰，而黑色则是我们为对手灌注的恐惧。”1899年12月16日，AC米兰创始人赫伯特·吉尔平的这句话标志着这支伟大俱乐部的正式成立。自成立以来，AC米兰为意大利足球乃至国际足球都作出了巨大贡献。球队持续不断地在球场上取得成功，并始终坚守着俱乐部价值观——热情和优雅。为庆祝俱乐部成立120周年，11月7日正式发行了官方120周年书籍《SEMPREMILAN》。本书以独家且原创的内容将AC米兰无与伦比的历史栩栩如生地记录下来。对于所有红黑军团的支持者而言，这是一本不容错过的读物。AC米兰足球俱乐部还将在12月15日——男足一线队坐镇主场对阵萨索洛的比赛中，邀请球迷们参与庆祝活动。在这个特殊的比赛日，俱乐部将在圣西罗球场周围及内部举办一系列激动人心的活动以庆祝俱乐部的120周年诞辰。同时，这场比赛将为球迷们和球员们提供一个机会，共同回顾历史，让红黑之心激情碰撞出新的回忆。俱乐部将在未来几周内宣布有关俱乐部120周年纪念活动的更多细节。12月15日AC米兰主场对阵萨索洛的球票现已开售，可通过官网www.acmilan.com以及在米兰之家售票处Aldo Rossi 8购票。'},
-    {title:'初遇小贝，他的红黑故事从这里开始...',context:'提及米兰客战罗马，不少球迷便会想起关于帕托和贝克汉姆的这段回忆。当时所有人都认为贝克汉姆需要两三个月才能恢复比赛状态，为米兰上场。但是作为一名职业素养和勇气兼具的球员，他马上就做好了准备。安切洛蒂在圣诞假期前仅见过贝克汉姆一次，当时米兰在圣西罗5-1击败了乌迪内斯。紧接着联赛进入了冬歇期阶段。贝克汉姆在2008/09赛季的加盟对于大多数人来说似乎仅仅只是一时冲动的结果，过于任性，但安切洛蒂很快意识到，这位英格兰的国民英雄对待比赛非常认真。2009年1月，在迪拜足球挑战赛上，米兰点球战胜汉堡，贝克汉姆在那场比赛首次披上红黑战袍，并在上半场扮演了关键先生。贝克汉姆在迪拜的首秀仅仅只是个开始，他发挥出色，并且证明了他能为安切洛蒂的球队增添价值。正因如此，冬歇期之后，贝克汉姆在客场对阵罗马的比赛中进入了首发名单。罗马开局打得很好，并迅速通过武齐尼奇的进球打破僵局。但米兰继续战斗，卷土重来，凭借着帕托快速、灵巧且势不可挡的梅开二度，米兰反超了比分。然而，胜利的天平最终并没有倒向米兰。武齐尼奇抓住另一个机会，将比分扳成2-2平。但不同于在迪拜半场被弗拉米尼换下，贝克汉姆在罗马几乎踢满了全场比赛。这也展现了贝克汉姆那个赛季在安切洛蒂的阵中的重要性。'}
-  ])
+function ListPage({ data, url: { query: { id }}}) {
+  const [list, setList] = useState(data)
+
+  useEffect(() => {
+    setList(data)
+  })
+
+  marked.setOptions({
+    renderer: new marked.Renderer(),
+    gfm: true,
+    pedantic: false,
+    sanitize: false,
+    tables: true,
+    breaks: false,
+    smartLists: true,
+    smartypants: false,
+    highlight: function(code) {
+      return hljs.highlightAuto(code).value
+    }
+  })
 
   return (
     <>
@@ -28,7 +46,7 @@ function ListPage() {
         <Col xs={24} sm={24} md={16} lg={18} xl={14} className={css.left}>
           <Breadcrumb className="breadcrumb">
             <Breadcrumb.Item><Link href="/"><a>欧冠</a></Link></Breadcrumb.Item>
-            <Breadcrumb.Item>联赛</Breadcrumb.Item>
+            <Breadcrumb.Item>{+id === 1 ? '联' : '杯'}赛</Breadcrumb.Item>
           </Breadcrumb>
           <List
             header={<div>最新赛程</div>}
@@ -36,13 +54,17 @@ function ListPage() {
             dataSource={list}
             renderItem={item => (
               <List.Item>
-                <div className={css['list-title']}>{item.title}</div>
-                <div className={css['list-icon']}>
-                  <span><Icon type="calendar" /> 2019.11.28</span>
-                  <span><Icon type="folder" /> 联赛</span>
-                  <span><Icon type="fire" /> 1000人</span>
+                <div className={css['list-title']}>
+                  <Link href={{ pathname: '/detail', query: { id: item.id }}}>
+                    <a>{item.title}</a>
+                  </Link>
                 </div>
-                <div className={css['list-context']}>{item.context}</div>
+                <div className={css['list-icon']}>
+                  <span><Icon type="calendar" /> {item.addTime}</span>
+                  <span><Icon type="folder" /> {item.typeName}</span>
+                  <span><Icon type="fire" /> {item.view_count}人</span>
+                </div>
+                <div className={css['list-context']} dangerouslySetInnerHTML={{ __html: item.introduce }}></div>
               </List.Item>
             )} />
         </Col>
@@ -54,6 +76,16 @@ function ListPage() {
       <Footer />
     </>
   )
+}
+
+ListPage.getInitialProps = async function(context) {
+  const { id } = context.query
+  const promise = new Promise((resolve) =>
+    axios.get(`${api.list}/${id}`).then(({ data }) =>
+      resolve({ data })
+    )
+  )
+  return await promise
 }
 
 export default ListPage

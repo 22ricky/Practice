@@ -1,0 +1,29 @@
+.layout-logo {
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 16px;
+}
+
+.layout-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.layout .layout-header {
+  background: #fff;
+}
+
+.layout-content {
+  margin: 24px 16px 0;
+}
+
+.layout-content-wrap {
+  height: 100%;
+  padding: 24px;
+  background: #fff;
+}
+
+.layout-footer {
+  text-align: center;
+}

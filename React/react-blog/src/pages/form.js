@@ -1,33 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import marked from 'marked';
+import moment from 'moment';
 import { Form, Row, Col, Input, Select, Button, DatePicker } from 'antd';
-import { type } from '../static/api/index';
+import { type, getArticle, addArticle } from '../static/api/index';
 import '../static/css/form.css';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-export default function() {
+export default function ({ history, match: { params: { id } } }) {
   const [form] = Form.useForm();
   const [types, setTypes] = useState([]);
   useEffect(() => {
+    async function article() {
+      const data = await getArticle(id);
+      data.type_id = `${data.type_id}`;
+      data.addTime = moment(data.addTime, 'YYYY-MM-DD');
+      form.setFieldsValue(data);
+    }
     async function getTypes() {
-      try {
-        const data = await type();
+      const data = await type();
+      setTypes(data);
+      if (id) {
+        await article();
+      } else {
         const [{ id }] = data;
-        if(id || id === 0) form.setFieldsValue({ type: `${id}` });
-        setTypes(data);
-      } catch (error) {}
+        if(id || id === 0) form.setFieldsValue({ type_id: `${id}` });
+      }
     }
     getTypes();
-  }, [form]);
+  }, [form, id]);
   async function handleSubmit(values) {
     try {
-      console.log(values);
+      values.addTime = values.addTime.unix();
+      values.view_count = Math.ceil(Math.random() * 100) + 1000;
+      await addArticle(values);
+      history.push('/list');
     } catch (error) {}
   }
   return (
-    <Form className="form wrap" form={form} size="large" onFinish={handleSubmit}>
+    <Form key={id} className="form wrap" size="large" form={form} onFinish={handleSubmit}>
       <Row className="wrap" gutter={12}>
         <Col className="column wrap" span={18}>
           <Row gutter={12}>
@@ -37,7 +49,7 @@ export default function() {
               </Form.Item>
             </Col>
             <Col span={4}>
-              <Form.Item name="type">
+              <Form.Item name="type_id">
                 <Select>
                   {types.map(({ id, typeName }) => <Option key={`${id}`}>{typeName}</Option>)}
                 </Select>
@@ -46,13 +58,13 @@ export default function() {
           </Row>
           <Row className="content" gutter={12}>
             <Col className="wrap" span={12}>
-              <Form.Item className="wrap" name="content" rules={[{ required: true, message: '文章内容不能为空' }]}>
+              <Form.Item className="wrap" name="article_content" rules={[{ required: true, message: '文章内容不能为空' }]}>
                 <TextArea className="markdown-content" placeholder="文章内容" />
               </Form.Item>
             </Col>
             <Col className="wrap" span={12}>
-            <Form.Item noStyle shouldUpdate={(prevValue, curValue) => prevValue.content !== curValue.content}>
-              {({ getFieldValue }) => <div className="show-html wrap" dangerouslySetInnerHTML={{ __html: marked(getFieldValue('content') || '') }} />}
+            <Form.Item noStyle shouldUpdate={(prevValue, curValue) => prevValue.article_content !== curValue.article_content}>
+              {({ getFieldValue }) => <div className="show-html wrap" dangerouslySetInnerHTML={{ __html: marked(getFieldValue('article_content') || '') }} />}
             </Form.Item>
             </Col>
           </Row>
@@ -64,13 +76,13 @@ export default function() {
               <Col><Button type="primary" htmlType="submit">发布文章</Button></Col>
             </Row>
           </Form.Item>
-          <Form.Item name="description" rules={[{ required: true, message: '文章简介不能为空' }]}>
+          <Form.Item name="introduce" rules={[{ required: true, message: '文章简介不能为空' }]}>
             <TextArea rows={4} placeholder="文章简介" />
           </Form.Item>
-          <Form.Item shouldUpdate={(prevValue, curValue) => prevValue.description !== curValue.description}>
-            {({ getFieldValue }) => <div className="introduce-html wrap" dangerouslySetInnerHTML={{ __html: marked(getFieldValue('description') || '') }} />}
+          <Form.Item shouldUpdate={(prevValue, curValue) => prevValue.introduce !== curValue.introduce}>
+            {({ getFieldValue }) => <div className="introduce-html wrap" dangerouslySetInnerHTML={{ __html: marked(getFieldValue('introduce') || '') }} />}
           </Form.Item>
-          <Form.Item name="time" rules={[{ required: true, message: '发布日期不能为空' }]}>
+          <Form.Item name="addTime" rules={[{ required: true, message: '发布日期不能为空' }]}>
             <DatePicker placeholder="发布日期" />
           </Form.Item>
         </Col>

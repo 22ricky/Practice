@@ -1,6 +1,8 @@
 import React from 'react';
 import { history } from 'umi';
 import AvatarDropdown from '@/components/layout/AvatarDropdown';
+import Footer from '@/components/layout/Footer';
+import './app.less';
 
 export async function getInitialState() {
   return { name: 'admin' }
@@ -16,6 +18,7 @@ export const layout = ({ initialState }: any) => {
         history.push('/login');
       }
     },
-    rightRender: () => <AvatarDropdown />
+    rightRender: () => <AvatarDropdown />,
+    footerRender: () => <Footer />,
   };
 };

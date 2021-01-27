@@ -10,6 +10,7 @@ export default defineConfig({
   },
   fastRefresh: {},
   routes,
+  locale: {},
   proxy: {
     '/Api': {
       'target': 'http://106.14.164.113:58019',

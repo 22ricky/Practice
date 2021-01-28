@@ -1,5 +1,6 @@
 import React from 'react';
 import { history } from 'umi';
+import { Request } from '../config/request';
 import AvatarDropdown from '@/components/layout/AvatarDropdown';
 import Footer from '@/components/layout/Footer';
 import './app.less';
@@ -22,3 +23,5 @@ export const layout = ({ initialState }: any) => {
     footerRender: () => <Footer />,
   };
 };
+
+export const request = Request

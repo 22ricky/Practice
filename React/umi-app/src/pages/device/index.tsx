@@ -1,12 +1,13 @@
 import React, { Fragment } from 'react';
 import { request } from 'umi';
 import { useAntdTable } from 'ahooks';
-import { Layout, Form, Row, Col, Input, Button, Table, Space, Divider, Popconfirm } from 'antd';
+import { Layout, PageHeader, Form, Row, Col, Select, Input, Button, Card, Table, Space, Divider, Popconfirm } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
-async function getList ({}, data: Object) {
+async function getList ({ current: pageIndex, pageSize }: any, data: Object) {
   let { Data } = await request('Device/GetDeviceList', {
     method: 'POST',
-    data
+    data: Object.assign(data, { pageIndex, pageSize })
   })
   Data = JSON.parse(Data).map((item: any, index: number) => {
     item.index = index + 1;
@@ -21,7 +22,6 @@ async function getList ({}, data: Object) {
 export default () => {
   const [form] = Form.useForm();
   const { tableProps, search } = useAntdTable(getList, { form });
-
   const { submit, reset } = search;
 
   const columns = [{
@@ -63,22 +63,47 @@ export default () => {
 
   return (
     <Layout className="inner-content">
-      <Form form={form}>
-        <Row justify="space-between">
-          <Col span={6}>
-            <Form.Item name="DeviceName" label="设备名称" labelCol={{ span: 8 }}>
-              <Input placeholder="设备名称" />
-            </Form.Item>
-          </Col>
-          <Form.Item>
-            <Space>
-              <Button type="primary" onClick={submit}>查询</Button>
-              <Button onClick={reset}>重置</Button>
-            </Space>
-          </Form.Item>
-        </Row>
-      </Form>
-      <Table columns={columns} rowKey="index" {...tableProps} />
+      <PageHeader ghost={false} title="设备信息管理" />
+      <Layout.Content>
+        <Form form={form} labelCol={{ span: 8 }}>
+          <Row>
+            <Col span={6}>
+              <Form.Item initialValue="" name="DeviceType" label="设备类型">
+                <Select placeholder="设备类型">
+                  <Select.Option value="">全部</Select.Option>
+                  <Select.Option value="1">燃气泄露报警器</Select.Option>
+                  <Select.Option value="2">智慧用电</Select.Option>
+                  <Select.Option value="3">烟感报警器</Select.Option>
+                  <Select.Option value="4">压力监测</Select.Option>
+                  <Select.Option value="5">水位监测</Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="DeviceName" label="设备名称">
+                <Input placeholder="设备名称" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Row justify="end">
+                <Form.Item>
+                  <Space>
+                    <Button type="primary" onClick={submit}>查询</Button>
+                    <Button onClick={reset}>重置</Button>
+                  </Space>
+                </Form.Item>
+              </Row>
+            </Col>
+          </Row>
+        </Form>
+        <Card>
+          <Row justify="space-between" align="middle">
+            <Col>数据列表</Col>
+            <Button type="primary" icon={<PlusOutlined />}>新建</Button>
+          </Row>
+          <Table size="middle" columns={columns} rowKey="index" {...tableProps} />
+        </Card>
+      </Layout.Content>
     </Layout>
   );
 };

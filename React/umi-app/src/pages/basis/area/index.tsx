@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react';
 import { request } from 'umi';
 import { useAntdTable } from 'ahooks';
-import { Layout, Form, Row, Col, Input, Button, Table, Space, Divider, Popconfirm } from 'antd';
+import { Layout, PageHeader, Form, Row, Col, Input, Button, Card, Table, Space, Divider, Popconfirm } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
 async function getList ({}, data: Object) {
   let { Data } = await request('Bas/GetAreaList', {
@@ -21,7 +22,6 @@ async function getList ({}, data: Object) {
 export default () => {
   const [form] = Form.useForm();
   const { tableProps, search } = useAntdTable(getList, { form });
-
   const { submit, reset } = search;
 
   const columns = [{
@@ -49,22 +49,31 @@ export default () => {
 
   return (
     <Layout className="inner-content">
-      <Form form={form}>
-        <Row justify="space-between">
-          <Col span={6}>
-            <Form.Item name="AName" label="片区名称" labelCol={{ span: 8 }}>
-              <Input placeholder="片区名称" />
+      <PageHeader ghost={false} title="片区管理" />
+      <Layout.Content>
+        <Form form={form}>
+          <Row justify="space-between">
+            <Col span={6}>
+              <Form.Item name="AName" label="片区名称" labelCol={{ span: 8 }}>
+                <Input placeholder="片区名称" />
+              </Form.Item>
+            </Col>
+            <Form.Item>
+              <Space>
+                <Button type="primary" onClick={submit}>查询</Button>
+                <Button onClick={reset}>重置</Button>
+              </Space>
             </Form.Item>
-          </Col>
-          <Form.Item>
-            <Space>
-              <Button type="primary" onClick={submit}>查询</Button>
-              <Button onClick={reset}>重置</Button>
-            </Space>
-          </Form.Item>
-        </Row>
-      </Form>
-      <Table columns={columns} rowKey="AreaId" {...tableProps} />
+          </Row>
+        </Form>
+        <Card>
+          <Row justify="space-between" align="middle">
+            <Col>数据列表</Col>
+            <Button type="primary" icon={<PlusOutlined />}>新建</Button>
+          </Row>
+          <Table size="middle" columns={columns} rowKey="AreaId" {...tableProps} />
+        </Card>
+      </Layout.Content>
     </Layout>
   );
 };

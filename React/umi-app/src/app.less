@@ -1,6 +1,21 @@
 .inner-content {
   min-height: calc(100vh - 140px);
   .ant-layout-content {
-    padding: 16px 24px;
+    padding: 24px 24px 0;
+    > .ant-form {
+      margin-bottom: 16px;
+      padding: 24px 24px 0;
+      background: #ffffff;
+      + .ant-card {
+        .ant-card-body {
+          padding: 0 24px;
+          > .ant-row {
+            padding: 16px 0;
+            font-size: 16px;
+            font-weight: 500;
+          }
+        }
+      }
+    }
   }
 }

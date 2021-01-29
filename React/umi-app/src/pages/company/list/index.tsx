@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react';
 import { request } from 'umi';
 import { useAntdTable } from 'ahooks';
-import { Layout, PageHeader, Form, Row, Col, Input, Button, Table, Space, Divider, Popconfirm } from 'antd';
+import { Layout, PageHeader, Form, Row, Col, Input, Button, Card, Table, Space, Divider, Popconfirm } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
 async function getList ({}, data: Object) {
   let { Data } = await request('Unit/GetUnitList', {
@@ -21,7 +22,6 @@ async function getList ({}, data: Object) {
 export default () => {
   const [form] = Form.useForm();
   const { tableProps, search } = useAntdTable(getList, { form });
-
   const { submit, reset } = search;
 
   const columns = [{
@@ -65,7 +65,13 @@ export default () => {
             </Form.Item>
           </Row>
         </Form>
-        <Table size="middle" columns={columns} rowKey="index" {...tableProps} />
+        <Card>
+          <Row justify="space-between" align="middle">
+            <Col>数据列表</Col>
+            <Button type="primary" icon={<PlusOutlined />}>新建</Button>
+          </Row>
+          <Table size="middle" columns={columns} rowKey="index" {...tableProps} />
+        </Card>
       </Layout.Content>
     </Layout>
   );

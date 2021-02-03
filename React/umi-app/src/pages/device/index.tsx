@@ -1,28 +1,16 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { request } from 'umi';
 import { useAntdTable } from 'ahooks';
-import { Layout, PageHeader, Form, Row, Col, Select, Input, Button, Card, Table, Space, Divider, Popconfirm } from 'antd';
+import { PaginatedParams } from 'ahooks/lib/useAntdTable';
+import { Layout, Modal, Form, Row, Col, Select, Input, Button, PageHeader, Card, Table, Space, Divider, Popconfirm, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
-async function getList ({ current: pageIndex, pageSize }: any, data: Object) {
-  let { Data } = await request('Device/GetDeviceList', {
-    method: 'POST',
-    data: Object.assign(data, { pageIndex, pageSize })
-  })
-  Data = JSON.parse(Data).map((item: any, index: number) => {
-    item.index = index + 1;
-    return item;
-  })
-  return {
-    list: Data,
-    total: Data.length
-  }
-}
-
 export default () => {
-  const [form] = Form.useForm();
-  const { tableProps, search } = useAntdTable(getList, { form });
-  const { submit, reset } = search;
+  const [visible, setVisible] = useState(false);
+  const [values, setValues]: any = useState({ Status: true });
+  const [modalForm] = Form.useForm();
+  const [searchForm] = Form.useForm();
+  const { search: { submit, reset }, refresh, tableProps } = useAntdTable(getList, { form: searchForm });
 
   const columns = [{
     title: '序号',
@@ -61,11 +49,26 @@ export default () => {
     }
   }];
 
+  async function getList ({ current: pageIndex, pageSize }: PaginatedParams[0], data: Object) {
+    let { Data } = await request('Device/GetDeviceList', {
+      method: 'POST',
+      data: Object.assign(data, { pageIndex, pageSize })
+    })
+    Data = JSON.parse(Data).map((item: any, index: number) => {
+      item.index = index + 1;
+      return item;
+    })
+    return {
+      list: Data,
+      total: Data.length
+    }
+  }
+
   return (
     <Layout className="inner-content">
       <PageHeader ghost={false} title="设备信息管理" />
       <Layout.Content>
-        <Form form={form} labelCol={{ span: 8 }}>
+        <Form form={searchForm} labelCol={{ span: 8 }}>
           <Row>
             <Col span={6}>
               <Form.Item initialValue="" name="DeviceType" label="设备类型">

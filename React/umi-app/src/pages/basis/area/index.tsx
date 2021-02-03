@@ -13,7 +13,7 @@ interface Item {
 
 export default () => {
   const [visible, setVisible] = useState(false);
-  const [values, setValues]: [any, any] = useState({ Status: true });
+  const [values, setValues]: any = useState({ Status: true });
   const [modalForm] = Form.useForm();
   const [searchForm] = Form.useForm();
   const { search: { submit, reset }, refresh, tableProps } = useAntdTable(getList, { form: searchForm });
@@ -55,7 +55,7 @@ export default () => {
       total: Data.length
     }
   }
-  
+
   async function setItem({ AreaId: ANum, AreaName: AName, Status }: Item) {
     Status = Status ? '0' : '-1'
     await request('Bas/AddArea', {
@@ -66,7 +66,7 @@ export default () => {
     setVisible(false)
     message.success(`${ANum ? '编辑' : '新建'}片区成功`)
   }
-  
+
   async function deleteItem({ AreaId: ANum }: Item) {
     await request('Bas/DelArea', {
       method: 'POST',
@@ -80,8 +80,9 @@ export default () => {
     <Fragment>
       <Modal
         centered
+        forceRender
         visible={visible}
-        title={`${values.AreaId ? '编辑' : '新建'}片区`}
+        title={`${modalForm.getFieldValue('AreaId') ? '编辑' : '新建'}片区`}
         onCancel={() => { setVisible(false); modalForm.resetFields(); }}
         onOk={modalForm.submit}>
         <Form form={modalForm} initialValues={values} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} onFinish={values => setItem(values)}>

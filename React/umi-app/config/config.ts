@@ -9,6 +9,7 @@ export default defineConfig({
     type: 'none',
   },
   fastRefresh: {},
+  favicon: 'https://gw.alipayobjects.com/zos/rmsportal/rlpTLlbMzTNYuZGGCVYM.png',
   routes,
   locale: {},
   proxy: {

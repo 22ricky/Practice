@@ -63,6 +63,7 @@ export default () => {
       data: { SNum, SName, Status }
     })
     await refresh()
+    modalForm.resetFields()
     setVisible(false)
     message.success(`${SNum ? '编辑' : '新建'}街道成功`)
   }

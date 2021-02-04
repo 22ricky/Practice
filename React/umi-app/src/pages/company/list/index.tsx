@@ -1,13 +1,27 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { request } from 'umi';
 import { useAntdTable } from 'ahooks';
-import { Layout, Modal, Form, Row, Col, Input, Select, Button, PageHeader, Card, Table, Space, Divider, Popconfirm, message } from 'antd';
+import { Layout, Modal, Form, Row, Col, Input, Select, DatePicker, Button, PageHeader, Card, Table, Space, Divider, Popconfirm, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import moment from 'moment';
 
 interface Item {
   index?: number,
   id: string,
-  uName: string
+  uName: string,
+  uType: string,
+  AreaId: string,
+  PointId: string,
+  Street: string,
+  Community: string,
+  Address: string,
+  HeadPeople: string,
+  HeadTel: string,
+  colorseparation: string,
+  KeySubject: string,
+  CheckDateLast: any,
+  Lon: string,
+  Lat: string
 }
 
 export default () => {
@@ -48,7 +62,7 @@ export default () => {
     dataIndex: 'colorseparation',
   }, {
     title: '消防等级',
-    dataIndex: 'FireRateId',
+    dataIndex: 'KeySubject',
   }, {
     title: '操作',
     dataIndex: 'action',
@@ -89,8 +103,9 @@ export default () => {
       method: 'POST',
       data
     })
-    Data = JSON.parse(Data).map((item: any, index: number) => {
+    Data = JSON.parse(Data).map((item: Item, index: number) => {
       item.index = index + 1;
+      item.CheckDateLast = item.CheckDateLast ? moment(item.CheckDateLast, 'YYYY-MM-DD') : null
       return item;
     })
     return {
@@ -99,14 +114,18 @@ export default () => {
     }
   }
 
-  async function setItem({ id: UNum, uName: UName }: Item) {
-    await request('Unit/AddUnit', {
-      method: 'POST',
-      data: { UNum, UName }
-    })
-    await refresh()
-    setVisible(false)
-    message.success(`${UNum ? '编辑' : '新建'}单位成功`)
+  async function setItem({ id: UNum, uName: UName, uType: SubjectType, AreaId: Areaadd, PointId: Pointadd, Street, Community, Address, HeadPeople, HeadTel, colorseparation: UColor, KeySubject: FireRateadd, CheckDateLast, Lon, Lat }: Item) {
+    const CheckTime = CheckDateLast ? CheckDateLast.format('YYYY-MM-DD') : ''
+    try {
+      await request('Unit/AddUnit', {
+        method: 'POST',
+        data: { UNum, UName, SubjectType, Areaadd, Pointadd, Street, Community, Address, HeadPeople, HeadTel, UColor, FireRateadd, CheckTime, Lon, Lat }
+      })
+      await refresh()
+      modalForm.resetFields()
+      setVisible(false)
+      message.success(`${UNum ? '编辑' : '新建'}单位成功`)
+    } catch (error) {}
   }
 
   async function deleteItem({ id: UNum }: Item) {
@@ -118,23 +137,101 @@ export default () => {
     message.success('删除单位成功')
   }
 
-
   return (
     <Fragment>
       <Modal
         centered
         forceRender
+        width={800}
         visible={visible}
         title={`${modalForm.getFieldValue('id') ? '编辑' : '新建'}单位`}
         onCancel={() => { setVisible(false); modalForm.resetFields(); }}
         onOk={modalForm.submit}>
-        <Form form={modalForm} initialValues={values} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} onFinish={values => setItem(values)}>
+        <Form form={modalForm} initialValues={values} labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} onFinish={values => setItem(values)}>
           <Form.Item hidden name="id">
             <Input />
           </Form.Item>
-          <Form.Item label="单位名称" name="uName" rules={[{ required: true, message: '请输入名称!' }]}>
-            <Input />
-          </Form.Item>
+          <Row>
+            <Col span={12}>
+              <Form.Item label="单位名称" name="uName" rules={[{ required: true, message: '请输入单位名称!' }]}>
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="单位类型" name="uType" rules={[{ required: true, message: '请输入单位类型!' }]}>
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="片区" name="AreaId" rules={[{ required: true, message: '请选择片区!' }]}>
+                <Select>
+                  {areas.map(({ id, name }) => <Select.Option key={id} value={name}>{name}</Select.Option>)}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="点位" name="PointId" rules={[{ required: true, message: '请选择点位!' }]}>
+                <Select>
+                  {points.map(({ id, name }) => <Select.Option key={id} value={name}>{name}</Select.Option>)}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="街道" name="Street">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="社区" name="Community">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="单位地址" name="Address">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="负责人" name="HeadPeople">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="负责人电话" name="HeadTel">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="分色管理" name="colorseparation">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="消防等级" name="KeySubject">
+                <Select>
+                  <Select.Option value="一级">一级</Select.Option>
+                  <Select.Option value="二级">二级</Select.Option>
+                  <Select.Option value="三级">三级</Select.Option>
+                  <Select.Option value="一般">一般</Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="检查日期" name="CheckDateLast">
+                <DatePicker style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="定位坐标Lon" name="Lon" rules={[{ required: true, message: '请输入经度!' }]}>
+                <Input placeholder="经度" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="定位坐标Lat" name="Lat" rules={[{ required: true, message: '请输入纬度!' }]}>
+                <Input placeholder="纬度" />
+              </Form.Item>
+            </Col>
+          </Row>
         </Form>
       </Modal>
       <Layout className="inner-content">
@@ -153,10 +250,10 @@ export default () => {
                 </Form.Item>
               </Col>
               <Col span={4}>
-                <Form.Item initialValue="" name="id" label="单位选择" labelCol={{ span: 12 }}>
-                  <Select placeholder="单位选择">
+                <Form.Item initialValue="" name="AreaId" label="片区选择" labelCol={{ span: 12 }}>
+                  <Select placeholder="片区选择">
                     <Select.Option value="">全部</Select.Option>
-                    {areas.map(({ id, name }) => <Select.Option value={id}>{name}</Select.Option>)}
+                    {areas.map(({ id, name }) => <Select.Option key={id} value={name}>{name}</Select.Option>)}
                   </Select>
                 </Form.Item>
               </Col>
@@ -164,7 +261,7 @@ export default () => {
                 <Form.Item initialValue="" name="PointId" label="点位选择" labelCol={{ span: 12 }}>
                   <Select placeholder="点位选择">
                     <Select.Option value="">全部</Select.Option>
-                    {points.map(({ id, name }) => <Select.Option value={id}>{name}</Select.Option>)}
+                    {points.map(({ id, name }) => <Select.Option key={id} value={name}>{name}</Select.Option>)}
                   </Select>
                 </Form.Item>
               </Col>

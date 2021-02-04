@@ -5,11 +5,18 @@ const BaseUrl = '/Api';
 export const Request: RequestConfig = {
   errorConfig: {
     adaptor: (data) => {
-      return {
-        ...data,
-        success: data.IsSuccess,
-        errorMessage: data.ErrorMsg,
-      };
+      if (data) {
+        return {
+          ...data,
+          success: data.IsSuccess,
+          errorMessage: data.ErrorMsg,
+        };
+      } else {
+        return {
+          success: data,
+          errorMessage: '请求错误',
+        }
+      }
     },
   },
   requestInterceptors: [

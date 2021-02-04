@@ -63,6 +63,7 @@ export default () => {
       data: { MNum, MName, Status }
     })
     await refresh()
+    modalForm.resetFields()
     setVisible(false)
     message.success(`${MNum ? '编辑' : '新建'}类型成功`)
   }

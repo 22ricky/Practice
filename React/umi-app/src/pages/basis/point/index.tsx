@@ -40,6 +40,7 @@ export default () => {
       data: { PNum, PName, Status }
     })
     await refresh()
+    modalForm.resetFields()
     setVisible(false)
     message.success(`${PNum ? '编辑' : '新建'}点位成功`)
   }

@@ -15,7 +15,7 @@ export default () => {
     dataIndex: 'index',
   }, {
     title: '单位名称',
-    dataIndex: 'uName',
+    dataIndex: 'SubjectName',
   }, {
     title: '街道',
     dataIndex: 'Street',
@@ -24,24 +24,26 @@ export default () => {
     dataIndex: 'Community',
   }, {
     title: '检查时间',
-    dataIndex: 'CheckDateLast',
+    dataIndex: 'CheckDate',
   }, {
     title: '检查人',
-    dataIndex: 'HeadPeople',
+    dataIndex: 'CheckPerson',
   }, {
     title: '检查结果',
-    dataIndex: 'CheckResultsLast',
+    dataIndex: 'CheckResults',
   }, {
     title: '操作',
     dataIndex: 'action',
-    render(text: string, { id }: any) {
+    render(text: string, record: any) {
       return (
         <Fragment>
-          <a>编辑</a>
+          {/* <a>检查单</a>
           <Divider type="vertical" />
-          <Popconfirm title="确定删除当前单位吗？">
-            <a>删除</a>
-          </Popconfirm>
+          <a>整改书</a>
+          <Divider type="vertical" />
+          <a>复查结果</a>
+          <Divider type="vertical" />
+          <a>对比图/隐患图</a> */}
         </Fragment>
       );
     }
@@ -101,7 +103,7 @@ export default () => {
               <Form.Item initialValue="" name="AreaId" label="片区选择" labelCol={{ span: 12 }}>
                 <Select placeholder="片区选择">
                   <Select.Option value="">全部</Select.Option>
-                  {areas.map(({ id, name }) => <Select.Option value={id}>{name}</Select.Option>)}
+                  {areas.map(({ id, name }) => <Select.Option key={id} value={name}>{name}</Select.Option>)}
                 </Select>
               </Form.Item>
             </Col>
@@ -109,7 +111,7 @@ export default () => {
               <Form.Item initialValue="" name="PointId" label="点位选择" labelCol={{ span: 12 }}>
                 <Select placeholder="点位选择">
                   <Select.Option value="">全部</Select.Option>
-                  {points.map(({ id, name }) => <Select.Option value={id}>{name}</Select.Option>)}
+                  {points.map(({ id, name }) => <Select.Option key={id} value={name}>{name}</Select.Option>)}
                 </Select>
               </Form.Item>
             </Col>

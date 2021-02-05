@@ -9,7 +9,7 @@ export const Request: RequestConfig = {
         return {
           ...data,
           success: data.IsSuccess,
-          errorMessage: data.ErrorMsg,
+          errorMessage: data.ErrorMsg || data.Message,
         };
       } else {
         return {

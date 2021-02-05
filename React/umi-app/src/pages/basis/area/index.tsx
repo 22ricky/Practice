@@ -58,23 +58,27 @@ export default () => {
 
   async function setItem({ AreaId: ANum, AreaName: AName, Status }: Item) {
     Status = Status ? '0' : '-1'
-    await request('Bas/AddArea', {
-      method: 'POST',
-      data: { ANum, AName, Status }
-    })
-    await refresh()
-    modalForm.resetFields()
-    setVisible(false)
-    message.success(`${ANum ? '编辑' : '新建'}片区成功`)
+    try {
+      await request('Bas/AddArea', {
+        method: 'POST',
+        data: { ANum, AName, Status }
+      })
+      await refresh()
+      modalForm.resetFields()
+      setVisible(false)
+      message.success(`${ANum ? '编辑' : '新建'}片区成功`)
+    } catch (error) {}
   }
 
   async function deleteItem({ AreaId: ANum }: Item) {
-    await request('Bas/DelArea', {
-      method: 'POST',
-      data: { ANum }
-    })
-    await refresh()
-    message.success('删除片区成功')
+    try {
+      await request('Bas/DelArea', {
+        method: 'POST',
+        data: { ANum }
+      })
+      await refresh()
+      message.success('删除片区成功')
+    } catch (error) {}
   }
 
   return (

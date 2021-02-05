@@ -35,23 +35,27 @@ export default () => {
 
   async function setItem({ PlaceId: PNum, PlaceName: PName, Status }: Item) {
     Status = Status ? '0' : '-1'
-    await request('Bas/AddPoint', {
-      method: 'POST',
-      data: { PNum, PName, Status }
-    })
-    await refresh()
-    modalForm.resetFields()
-    setVisible(false)
-    message.success(`${PNum ? '编辑' : '新建'}点位成功`)
+    try {
+      await request('Bas/AddPoint', {
+        method: 'POST',
+        data: { PNum, PName, Status }
+      })
+      await refresh()
+      modalForm.resetFields()
+      setVisible(false)
+      message.success(`${PNum ? '编辑' : '新建'}点位成功`)
+    } catch (error) {}
   }
 
   async function deleteItem({ PlaceId: PNum }: Item) {
-    await request('Bas/DelPoint', {
-      method: 'POST',
-      data: { PNum }
-    })
-    await refresh()
-    message.success('删除点位成功')
+    try {
+      await request('Bas/DelPoint', {
+        method: 'POST',
+        data: { PNum }
+      })
+      await refresh()
+      message.success('删除点位成功')
+    } catch (error) {}
   }
 
   const columns = [{

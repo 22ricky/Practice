@@ -22,11 +22,14 @@ export default () => {
   const [values, setValues]: any = useState({ Status: true, OPType: 'Create' });
   const [modalForm] = Form.useForm();
   const [searchForm] = Form.useForm();
-  const { search: { submit, reset }, refresh, tableProps } = useAntdTable(getList, { form: searchForm });
+  const { search: { submit, reset }, refresh, tableProps, pagination: { current, pageSize } } = useAntdTable(getList, { form: searchForm });
 
   const columns = [{
     title: '序号',
     dataIndex: 'index',
+    render(text: number) {
+      return (current - 1) * pageSize + text
+    }
   }, {
     title: '设备ID',
     dataIndex: 'DeviceID',
@@ -92,12 +95,14 @@ export default () => {
   }
 
   async function deleteItem({ DeviceID }: Item) {
-    await request('Device/DelDevice', {
-      method: 'POST',
-      data: { DeviceID }
-    })
-    await refresh()
-    message.success('删除设备成功')
+    try {
+      await request('Device/DelDevice', {
+        method: 'POST',
+        data: { DeviceID }
+      })
+      await refresh()
+      message.success('删除设备成功')
+    } catch (error) {}
   }
 
   return (

@@ -58,23 +58,27 @@ export default () => {
 
   async function setItem({ MainId: MNum, MainName: MName, Status }: Item) {
     Status = Status ? '0' : '-1'
-    await request('Bas/AddMain', {
-      method: 'POST',
-      data: { MNum, MName, Status }
-    })
-    await refresh()
-    modalForm.resetFields()
-    setVisible(false)
-    message.success(`${MNum ? '编辑' : '新建'}类型成功`)
+    try {
+      await request('Bas/AddMain', {
+        method: 'POST',
+        data: { MNum, MName, Status }
+      })
+      await refresh()
+      modalForm.resetFields()
+      setVisible(false)
+      message.success(`${MNum ? '编辑' : '新建'}类型成功`)
+    } catch (error) {}
   }
 
   async function deleteItem({ MainId: MNum }: Item) {
-    await request('Bas/DelMain', {
-      method: 'POST',
-      data: { MNum }
-    })
-    await refresh()
-    message.success('删除类型成功')
+    try {
+      await request('Bas/DelMain', {
+        method: 'POST',
+        data: { MNum }
+      })
+      await refresh()
+      message.success('删除类型成功')
+    } catch (error) {}
   }
 
   return (

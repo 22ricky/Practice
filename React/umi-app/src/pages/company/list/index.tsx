@@ -129,12 +129,14 @@ export default () => {
   }
 
   async function deleteItem({ id: UNum }: Item) {
-    await request('Unit/DelUnit', {
-      method: 'POST',
-      data: { UNum }
-    })
-    await refresh()
-    message.success('删除单位成功')
+    try {
+      await request('Unit/DelUnit', {
+        method: 'POST',
+        data: { UNum }
+      })
+      await refresh()
+      message.success('删除单位成功')
+    } catch (error) {}
   }
 
   return (

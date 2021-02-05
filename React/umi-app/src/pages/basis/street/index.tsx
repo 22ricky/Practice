@@ -58,23 +58,27 @@ export default () => {
 
   async function setItem({ streetId: SNum, street_name: SName, status: Status }: Item) {
     Status = Status ? '0' : '-1'
-    await request('Bas/AddStreet', {
-      method: 'POST',
-      data: { SNum, SName, Status }
-    })
-    await refresh()
-    modalForm.resetFields()
-    setVisible(false)
-    message.success(`${SNum ? '编辑' : '新建'}街道成功`)
+    try {
+      await request('Bas/AddStreet', {
+        method: 'POST',
+        data: { SNum, SName, Status }
+      })
+      await refresh()
+      modalForm.resetFields()
+      setVisible(false)
+      message.success(`${SNum ? '编辑' : '新建'}街道成功`)
+    } catch (error) {}
   }
 
   async function deleteItem({ streetId: SNum }: Item) {
-    await request('Bas/DelStreet', {
-      method: 'POST',
-      data: { SNum }
-    })
-    await refresh()
-    message.success('删除街道成功')
+    try {
+      await request('Bas/DelStreet', {
+        method: 'POST',
+        data: { SNum }
+      })
+      await refresh()
+      message.success('删除街道成功')
+    } catch (error) {}
   }
 
   return (

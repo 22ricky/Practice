@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { request } from 'umi';
 import { useAntdTable } from 'ahooks';
 import { Layout, Form, Row, Col, Input, DatePicker, Button, PageHeader, Card, Table, Space, Divider, Popconfirm } from 'antd';
+import moment from 'moment';
 
 export default () => {
   const [searchForm] = Form.useForm();
@@ -43,10 +44,14 @@ export default () => {
     }
   }];
 
-  async function getList ({}, data: Object) {
+  async function getList ({}, data: any) {
+    const { alarmDevice, alarmType, dateRange } = data
+    let [beginTime, endTime] = dateRange || []
+    beginTime = beginTime && moment(beginTime).format('YYYY-MM-DD')
+    endTime = endTime && moment(endTime).format('YYYY-MM-DD')
     let { Data } = await request('Unit/GetRecordList', {
       method: 'POST',
-      data
+      data: { alarmDevice, alarmType, beginTime, endTime }
     })
     Data = JSON.parse(Data).map((item: any, index: number) => {
       item.index = index + 1;
@@ -60,7 +65,7 @@ export default () => {
 
   return (
     <Layout className="inner-content">
-      <PageHeader ghost={false} title="单位检查记录" />
+      <PageHeader ghost={false} title="预警信息管理" />
       <Layout.Content>
         <Form form={searchForm} labelCol={{ span: 8 }}>
           <Row>
@@ -75,8 +80,8 @@ export default () => {
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item name="beginTime" label="时间段">
-                <DatePicker />
+              <Form.Item name="dateRange" label="时间段">
+                <DatePicker.RangePicker />
               </Form.Item>
             </Col>
             <Col span={6}>

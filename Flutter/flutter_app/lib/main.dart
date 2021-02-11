@@ -19,23 +19,18 @@
 // }
 
 import 'package:flutter/material.dart';
-import './demo/demo04/index.dart';
+import './demo/demo14/index.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Filter Widget',
+      title: 'Tooltip',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Filter Widget'),
-        ),
-        body: Index(),
-      ),
+      home: Index(),
     );
   }
 }

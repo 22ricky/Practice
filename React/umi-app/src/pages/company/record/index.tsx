@@ -37,8 +37,8 @@ export default () => {
     render(text: string, record: any) {
       return (
         <Fragment>
-          {/* <a>检查单</a>
-          <Divider type="vertical" />
+          <a>检查单</a>
+          {/* <Divider type="vertical" />
           <a>整改书</a>
           <Divider type="vertical" />
           <a>复查结果</a>

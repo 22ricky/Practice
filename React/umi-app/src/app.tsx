@@ -5,14 +5,10 @@ import AvatarDropdown from '@/components/layout/AvatarDropdown';
 import Footer from '@/components/layout/Footer';
 import './app.less';
 
-export async function getInitialState() {
-  return { name: 'admin' }
-}
-
-export const layout = ({ initialState }: any) => {
+export const layout = () => {
   return {
     onPageChange: () => {
-      const { name } = initialState;
+      const { name } = JSON.parse(localStorage.getItem('user') || '{}');
       const { location } = history;
       // 如果没有登录，重定向到 login
       if (!name && location.pathname !== '/login') {

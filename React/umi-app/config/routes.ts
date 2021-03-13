@@ -4,6 +4,7 @@ export default [{
   name: '登录',
   headerRender: false,
   menuRender: false,
+  footerRender: false,
   hideInMenu: true,
 }, {
   path: '/',
